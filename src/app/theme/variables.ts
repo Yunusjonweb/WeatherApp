@@ -1,8 +1,8 @@
 export const colors = {
   main: {
-    100: '#0099FF',
-    200: '#0174D8',
-    600: '#0099FF',
+    100: '#FFFFFF',
+    200: '#FFFFFF',
+    600: '#FFFFFF',
   },
   red: {
     100: '#E04A4A',

@@ -43,11 +43,11 @@ export const theme = extendTheme({
           textTransform: 'lowercase',
         },
         _focus: {
-          borderColor: 'main.100',
           backgroundColor: 'transparent',
           _icon: {color: 'white.100'},
           _input: {
-            color: 'main.100',
+            color: 'white.100',
+            fontWeight:'600',
           },
         },
       },

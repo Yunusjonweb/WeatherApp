@@ -1,51 +1,49 @@
+import moment from 'moment';
+import {VStack} from 'native-base';
 import React from 'react';
-import {View, Text, StyleSheet, Dimensions, Image} from 'react-native';
+import {Image, Text, StyleSheet, Dimensions} from 'react-native';
 
-export const SLIDER_WIDTH = Dimensions.get('window').width + 80;
-export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
+export const SLIDER_WIDTH = Dimensions.get('window').width + 40;
+export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.4);
 
 const CarouselCardItem = ({item, index}) => {
   return (
-    <View style={styles.container} key={index}>
-      <Image source={{uri: item.imgUrl}} style={styles.image} />
-      <Text style={styles.header}>{item.title}</Text>
-      <Text style={styles.body}>{item.body}</Text>
-    </View>
+    <VStack
+      space="5px"
+      style={styles.container}
+      key={index}
+      alignItems="center">
+      <Image
+        style={styles.tinyLogo}
+        source={{uri: 'https:' + item?.day?.condition?.icon}}
+        alt="weather icon"
+      />
+      <Text style={styles.nameDays}>{moment(item?.date).format('dddd')}</Text>
+      <Text style={styles.dataTitle}>{item?.day?.avgtemp_c}&#176;</Text>
+    </VStack>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    width: ITEM_WIDTH,
-    paddingBottom: 40,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.29,
-    shadowRadius: 4.65,
-    elevation: 7,
+    width: 140,
+    height: 140,
+    borderRadius: 5,
+    backgroundColor: 'rgba(255,255,255,0.15)',
   },
-  image: {
-    width: ITEM_WIDTH,
-    height: 300,
+  tinyLogo: {
+    width: 80,
+    height: 80,
   },
-  header: {
-    color: '#222',
-    fontSize: 28,
-    fontWeight: 'bold',
-    paddingLeft: 20,
-    paddingTop: 20,
+  nameDays: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: 'white',
   },
-  body: {
-    color: '#222',
-    fontSize: 18,
-    paddingLeft: 20,
-    paddingLeft: 20,
-    paddingRight: 20,
+  dataTitle: {
+    fontSize: 17,
+    fontWeight: '400',
+    color: 'white',
   },
 });
 

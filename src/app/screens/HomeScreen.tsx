@@ -1,62 +1,64 @@
-import React, {useState} from 'react';
-import {HStack, Input, Pressable, SearchIcon, VStack, View} from 'native-base';
+import React, {useRef, useState, useEffect} from 'react';
+import moment from 'moment';
 import {Text, Image} from 'react-native';
+import {StyleSheet} from 'react-native';
+import Carousel from 'react-native-snap-carousel';
 import WeatherBg from '../../assets/images/bg.png';
 import PageWrapper from '../components/PageWrapper';
-import {StyleSheet} from 'react-native';
 import {fetchLocations, fetchWeatherForecast} from '../api';
-import Carousel from 'react-native-snap-carousel';
+import Icon from 'react-native-vector-icons/dist/FontAwesome';
+import {HStack, Input, Pressable, SearchIcon, VStack} from 'native-base';
 import CarouselCardItem, {SLIDER_WIDTH, ITEM_WIDTH} from './CarouselCardItem';
 
-const dataA = [
-  {
-    title: 'Aenean leo',
-    body: 'Ut tincidunt tincidunt erat. Sed cursus turpis vitae tortor. Quisque malesuada placerat nisl. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem.',
-    imgUrl: 'https://picsum.photos/id/11/200/300',
-  },
-  {
-    title: 'In turpis',
-    body: 'Aenean ut eros et nisl sagittis vestibulum. Donec posuere vulputate arcu. Proin faucibus arcu quis ante. Curabitur at lacus ac velit ornare lobortis. ',
-    imgUrl: 'https://picsum.photos/id/10/200/300',
-  },
-  {
-    title: 'Lorem Ipsum',
-    body: 'Phasellus ullamcorper ipsum rutrum nunc. Nullam quis ante. Etiam ultricies nisi vel augue. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc.',
-    imgUrl: 'https://picsum.photos/id/12/200/300',
-  },
-];
-
 const HomeScreen = () => {
+  const isCarousel = useRef(null);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState('');
-  const [datas, setDatas] = useState([]);
-  const isCarousel = React.useRef(null);
+  const [weekData, setWeekData] = useState([]);
+
+  useEffect(() => {
+    defaultWeather();
+  }, []);
 
   const handleSearch = () => {
     if (search && search.length > 2)
       fetchLocations({cityName: search}).then(data => {
         setData(data);
-        yunus();
+        weekDays();
       });
+    setSearch('');
   };
 
-  const yunus = () => {
-    fetchWeatherForecast({cityName: search, days: 'Monday'}).then(data => {
-      setDatas(data);
+  const weekDays = () => {
+    return fetchWeatherForecast({
+      cityName: search,
+      days: 7,
+    }).then(docs => {
+      setWeekData(docs?.forecast?.forecastday);
     });
   };
 
-  console.log(datas, 654549659);
+  const defaultWeather = () => {
+    fetchLocations({cityName: 'Uzbekistan'}).then(data => {
+      setData(data);
+    });
+    fetchWeatherForecast({
+      cityName: 'Uzbekistan',
+      days: 7,
+    }).then(docs => {
+      setWeekData(docs?.forecast?.forecastday);
+    });
+  };
 
   return (
     <PageWrapper backgroundImage={WeatherBg}>
       <VStack justifyContent="space-between" height="100%" paddingTop="0px">
-        <VStack space="40px" mt="50" alignItems="center">
+        <VStack space="25px" mt="50" alignItems="center">
           <HStack justifyContent="space-between" alignItems="center">
             <Input
               type="text"
               width={'90%'}
-              placeholder="Search country"
+              placeholder="Search country..."
               onChangeText={text => setSearch(text)}
               InputRightElement={
                 <Pressable onPress={() => handleSearch()}>
@@ -65,16 +67,17 @@ const HomeScreen = () => {
               }
             />
           </HStack>
-          <HStack space="10px">
+          <HStack space="10px" alignItems="center">
+            <Icon name="location-arrow" color="white" size={30} />
             <Text style={styles.countryName}>{data?.location?.country}</Text>
             <Text style={styles.cityName}>{data?.location?.name}</Text>
           </HStack>
-          <Image
-            style={styles.tinyLogo}
-            source={{uri: 'https:' + data.current?.condition?.icon}}
-            alt="icon"
-          />
-          <VStack space="20px" alignItems="center">
+          <VStack space="10px" alignItems="center">
+            <Image
+              style={styles.tinyLogo}
+              source={{uri: 'https:' + data.current?.condition?.icon}}
+              alt="icon"
+            />
             <Text style={styles.tempCelsius}>
               {data?.current?.temp_c}&#176;
             </Text>
@@ -83,7 +86,7 @@ const HomeScreen = () => {
             </Text>
           </VStack>
           <HStack
-            space="25px"
+            space="15px"
             justifyContent="space-between"
             alignItems="center">
             <Image
@@ -101,25 +104,27 @@ const HomeScreen = () => {
               source={require('../../assets/icons/sun.png')}
             />
             <Text style={styles.dataTitle}>
-              {data?.location?.localtime.slice(-5)}AM
+              {moment(data?.location?.localtime).format('LTS')}
             </Text>
           </HStack>
-          <HStack space="25px" justifyContent="flex-end" alignItems="center">
-            <Text>Daily forecast</Text>
+          <HStack space="15px" justifyContent="flex-end" alignItems="center">
+            <Icon name="calendar" color="white" size={20} />
+            <Text style={styles.dataTitle}>Daily forecast</Text>
           </HStack>
-          <View>
-            <Carousel
-              layout="default"
-              layoutCardOffset={3}
-              ref={isCarousel}
-              data={dataA}
-              renderItem={CarouselCardItem}
-              sliderWidth={SLIDER_WIDTH}
-              itemWidth={ITEM_WIDTH}
-              inactiveSlideShift={0}
-              useScrollView={true}
-            />
-          </View>
+          <Carousel
+            layout="default"
+            layoutCardOffset={3}
+            ref={isCarousel}
+            data={weekData}
+            renderItem={CarouselCardItem}
+            sliderWidth={SLIDER_WIDTH}
+            itemWidth={ITEM_WIDTH}
+            inactiveSlideShift={0}
+            useScrollView={true}
+            autoplay={true}
+            autoplayDelay={2000}
+            loop={true}
+          />
         </VStack>
       </VStack>
     </PageWrapper>
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
   },
   countryName: {
     fontSize: 22,
-    fontWeight: '600',
+    fontWeight: '400',
     color: 'white',
   },
   cityName: {
@@ -169,12 +174,12 @@ const styles = StyleSheet.create({
   },
   dataTitle: {
     fontSize: 17,
-    fontWeight: '400',
+    fontWeight: '600',
     color: 'white',
   },
   weatherCard: {
-    width: 150,
-    height: 150,
+    width: 180,
+    height: 180,
     borderRadius: 10,
     backgroundColor: 'white',
   },
