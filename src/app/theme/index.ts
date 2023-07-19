@@ -47,7 +47,7 @@ export const theme = extendTheme({
           _icon: {color: 'white.100'},
           _input: {
             color: 'white.100',
-            fontWeight:'600',
+            fontWeight: '600',
           },
         },
       },

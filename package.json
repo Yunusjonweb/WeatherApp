@@ -7,7 +7,8 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "release-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/app.bundle --assets-dest android/app/build/intermediates/res/merged/release/ && cd android && ./gradlew assembleRelease && cd .. && rm -rf android/app/ src/main/assets/app.bundle"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.0",
@@ -19,10 +20,10 @@
     "native-base": "^3.4.28",
     "react": "18.1.0",
     "react-native": "0.70.10",
-    "react-native-asset": "^2.1.1", 
+    "react-native-asset": "^2.1.1",
     "react-native-bootsplash": "^4.7.5",
     "react-native-reanimated": "^3.3.0",
-    "react-native-safe-area-context": "^4.7.1",
+    "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "^3.22.1",
     "react-native-snap-carousel": "0.69.1",
     "react-native-splash-screen": "^3.3.0",

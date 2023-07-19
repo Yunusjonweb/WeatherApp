@@ -26,7 +26,6 @@ const HomeScreen = () => {
         setData(data);
         weekDays();
       });
-    setSearch('');
   };
 
   const weekDays = () => {
@@ -53,7 +52,7 @@ const HomeScreen = () => {
   return (
     <PageWrapper backgroundImage={WeatherBg}>
       <VStack justifyContent="space-between" height="100%" paddingTop="0px">
-        <VStack space="25px" mt="50" alignItems="center">
+        <VStack space="40px" mt="50" alignItems="center">
           <HStack justifyContent="space-between" alignItems="center">
             <Input
               type="text"
@@ -68,7 +67,7 @@ const HomeScreen = () => {
             />
           </HStack>
           <HStack space="10px" alignItems="center">
-            <Icon name="location-arrow" color="white" size={30} />
+            <Icon name="rocket" color="white" size={30} />
             <Text style={styles.countryName}>{data?.location?.country}</Text>
             <Text style={styles.cityName}>{data?.location?.name}</Text>
           </HStack>
